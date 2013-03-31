@@ -78,7 +78,7 @@ public void onChat(ServerChatEvent event){
 	
 	List<?> heard = sendCHatPackages(event.player.posX,event.player.posY, event.player.posZ, 10, event.player.dimension, new Packet3Chat(event.line));
 	if(heard.size() -1 == 0){
-		event.player.sendChatToPlayer("§9[EnderWare]§6No one heard you!");
+		event.player.sendChatToPlayer("\u00a7e9[EnderWare]\u00a7e6No one heard you!");
 		return;
 	}
 	int i = 0;
@@ -99,10 +99,10 @@ public void onChat(ServerChatEvent event){
 		}
 	}
 	if(heard.size() == 2){
-	event.player.sendChatToPlayer("§9[EnderWare]§6"+hear+" heard you!");
+	event.player.sendChatToPlayer("\u00a7e9[EnderWare]\u00a7e6"+hear+" heard you!");
 	return;
 	}
-	event.player.sendChatToPlayer("§9[EnderWare]§6The players: "+hear+" heard you!");
+	event.player.sendChatToPlayer("\u00a7e9[EnderWare]\u00a7e6The players: "+hear+" heard you!");
 
 	}
 
@@ -113,7 +113,7 @@ public void onCommand(CommandEvent event){
 			if(!(event.command instanceof IEnderCommand))return;
 	event.setCanceled(true);
 	if(!(PermissionManager.instance.hasPlayerPermission(event.sender.getCommandSenderName(), ((IEnderCommand)event.command).getPermisssion()))){
-		event.sender.sendChatToPlayer("§4You are not permitted to use that Command");
+		event.sender.sendChatToPlayer("\u00a7e4You are not permitted to use that Command");
 		MinecraftServer.logger.log(Level.INFO, event.sender.getCommandSenderName()+" try to use the "+event.command.getCommandName()+" command "+" without Permissions ( group = "+PermissionManager.instance.getPlayerGroup(event.sender.getCommandSenderName()));
 		return;
 	}
