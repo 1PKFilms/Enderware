@@ -1,6 +1,5 @@
 package Enderware.modsupport.computercraft.peripheral;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -150,7 +149,7 @@ public void onPlaced(EntityPlayer player,int code){
     public boolean canCommandSenderUseCommand(int var1, String var2) {
         boolean op = false;
         if(worldObj.isRemote)return false;
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient()&& Minecraft.getMinecraft().isSingleplayer())return true;
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())return true;
         @SuppressWarnings("rawtypes")
         java.util.Iterator i = MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).getOps().iterator();
         while(!op && i.hasNext()){

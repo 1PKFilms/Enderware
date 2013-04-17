@@ -21,7 +21,7 @@ public void registerHandlers(){
 public void registerPermissions(){
 	PermissionManager.instance.registerPermission("Colors", 2);
 	PermissionManager.instance.registerPermission("test", 2);
-	PermissionManager.instance.registerPermission("ChangeConfigs", 10);
+	PermissionManager.instance.registerPermission("ChangeConfigs", 9);
 	PermissionManager.instance.registerGroup(" Admin", 10);
 	
 }

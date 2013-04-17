@@ -6,14 +6,16 @@ import net.minecraft.server.dedicated.PropertyManager;
 
 public class PermissionManager {
 	public static PermissionManager instance = new PermissionManager();
+	public static boolean use = false;
 	public PropertyManager permmanager = null;
 	public PropertyManager groupmanager = null;
 	public PropertyManager playermanager = null;
 private PermissionManager(){
 	DedicatedServer server = null;
 	if(!(MinecraftServer.getServer() instanceof DedicatedServer))return;
+	
 	server = (DedicatedServer)MinecraftServer.getServer();
-
+	use = true;
 	this.permmanager = new PropertyManager(server.getFile("permission"));
 	this.groupmanager = new PropertyManager(server.getFile("groups"));
 	this.playermanager = new PropertyManager(server.getFile("playergroup"));

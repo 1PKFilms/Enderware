@@ -31,7 +31,7 @@ private static boolean toshoutdown = false;
 	        toshoutdown = true;
 	    }
 		if(packet.channel.equalsIgnoreCase("ModSettings")){
-		    if(FMLCommonHandler.instance().getEffectiveSide().isServer()&&!Minecraft.getMinecraft().isSingleplayer()&& PermissionManager.instance.hasPlayerPermission(((EntityPlayer)player).username, "ChangeConfigs")){
+		    if(FMLCommonHandler.instance().getEffectiveSide().isServer()&&PermissionManager.use&& !PermissionManager.instance.hasPlayerPermission(((EntityPlayer)player).username, "ChangeConfigs")){
 		        MinecraftServer.logger.log(Level.WARNING, "The Player "+((EntityPlayer)player).username+"tried to change a config without acess");
 		        return;
 		    }
