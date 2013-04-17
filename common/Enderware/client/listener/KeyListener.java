@@ -2,10 +2,13 @@ package Enderware.client.listener;
 
 import java.util.EnumSet;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.client.settings.KeyBinding;
-import cpw.mods.fml.client.FMLClientHandler;
+import Enderware.client.gui.GuiAdminScreen;
+
 import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -25,18 +28,21 @@ public class KeyListener extends KeyHandler{
 	@Override
 	public void keyDown(EnumSet<TickType> types, KeyBinding kb,
 			boolean tickEnd, boolean isRepeat) {
-		
+	    
+        if(Minecraft.getMinecraft().currentScreen == null &&  tickEnd&& kb.keyCode == temp[0].keyCode&&Minecraft.getMinecraft().theWorld.isRemote){
+            
+            Minecraft.getMinecraft().displayGuiScreen(new GuiAdminScreen());
+        }
 	}
 	@Override
 	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {
-		if(tickEnd&&FMLClientHandler.instance().getClient().currentScreen== null&& kb.keyCode == temp[0].keyCode){
-			
-		}
+	  
 	}
 	@Override
 	public EnumSet<TickType> ticks() {
 		// TODO Auto-generated method stub
-		return null;
+		return EnumSet.of(TickType.CLIENT);
 	}
 
+	
 }

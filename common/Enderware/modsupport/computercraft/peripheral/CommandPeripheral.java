@@ -1,5 +1,6 @@
 package Enderware.modsupport.computercraft.peripheral;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -60,7 +61,7 @@ public void onPlaced(EntityPlayer player,int code){
             case 1:
                
                 try {
-                    id = (double)params[0];
+                    id = (Double)params[0];
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new Exception("Parameter 1 : Number expexted");
@@ -100,7 +101,7 @@ public void onPlaced(EntityPlayer player,int code){
             case 2:
                id = 0;
                 try {
-                    id = (double)params[0];
+                    id = (Double)params[0];
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new Exception("Parameter 1 : Number expexted");
@@ -149,7 +150,7 @@ public void onPlaced(EntityPlayer player,int code){
     public boolean canCommandSenderUseCommand(int var1, String var2) {
         boolean op = false;
         if(worldObj.isRemote)return false;
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient())return false;
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient()&& Minecraft.getMinecraft().isSingleplayer())return true;
         @SuppressWarnings("rawtypes")
         java.util.Iterator i = MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).getOps().iterator();
         while(!op && i.hasNext()){

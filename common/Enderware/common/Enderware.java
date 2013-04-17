@@ -33,9 +33,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="Enderware", name="Enderware", version="0.0.1")
+@Mod(modid="Enderware", name="Enderware", version="0.0.3")
 
-@NetworkMod(clientSideRequired=true, serverSideRequired=false,channels={"Admin"}, packetHandler = Packehandler.class)
+@NetworkMod(clientSideRequired=true, serverSideRequired=false,channels={"ModSettings"}, packetHandler = Packehandler.class)
 public class Enderware {
         public static Block commandBlock = null;
         // The instance of your mod that Forge uses.
@@ -58,6 +58,7 @@ public class Enderware {
                Property chatcatigurations = config.get("Chat", "showRankinChat", true);
                chatcatigurations.comment = "if enabled <Admin|1PKFilms>message\n if not <1PKFilms>message";
                Config.configs.put("Chatcategories",chatcatigurations.getBoolean(true) );
+               Config.configs.put("ChatRange",config.get("Chat", "ChatRange",25).getInt(25) );
                 config.save();
                
             
@@ -86,6 +87,7 @@ public class Enderware {
 		if(temp != null && temp != "")
 		NetworkRegistry.instance().registerChannel(new Packehandler(), temp);
 	}
+	NetworkRegistry.instance().registerChannel(new Packehandler(), "shoutdown");
 			}
 			if(event.getSide() == Side.CLIENT)new SettingsAdabterClient();
 			if(event.getSide() == Side.SERVER)new SettingsAdapterServer();
@@ -94,6 +96,7 @@ public class Enderware {
             proxy.registerPermissions();
             registerBlocks();
             registerRecipys();
+           
         }
         
         @PostInit

@@ -35,13 +35,13 @@ public boolean onBlockActivated(World par1World, int par2, int par3,
     if(par1World.isRemote)return false;
 CommandPeripheral peripheral = (CommandPeripheral) par1World.getBlockTileEntity(par2, par3, par4);
 if(!(par5EntityPlayer.username.equals(peripheral.placedby)||isOp(par5EntityPlayer.username,par1World))){
-    par5EntityPlayer.sendChatToPlayer("$4 You are not a Op or the Owner of this Block!");
+    par5EntityPlayer.sendChatToPlayer("\u00a74 You are not a Op or the Owner of this Block!");
     return false;
 }
 peripheral.messagetoplayer = !peripheral.messagetoplayer;
 String temp = "";
 if(peripheral.messagetoplayer)temp = "send to you";else temp= "not send";
-par5EntityPlayer.sendChatToPlayer("2 Messages will "+temp);
+par5EntityPlayer.sendChatToPlayer("\u00a72 Messages will "+temp);
 return true;
 }
 private boolean isOp(String username,World par1World){
@@ -70,7 +70,7 @@ public void onBlockPlacedBy(World par1World, int par2, int par3, int par4,
      
      int code = new Random().nextInt(Integer.MAX_VALUE-1000)+1000;
      ((CommandPeripheral)par1World.getBlockTileEntity(par2, par3, par4)).onPlaced(((EntityPlayer)par5EntityLiving),code);
-     ((EntityPlayer)par5EntityLiving).sendChatToPlayer("\u00a7e2 The Passwort for The Player Command block is: \u00a7ec"+code);
+     ((EntityPlayer)par5EntityLiving).sendChatToPlayer("\u00a72 The Passwort for The Player Command block is: \u00a7c"+code);
     }
     
 }

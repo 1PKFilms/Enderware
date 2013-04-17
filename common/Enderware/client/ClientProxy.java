@@ -14,7 +14,7 @@ public void registerRenders() {
 }
 @Override
 	public void registerHandlers() {
-	KeyBindingRegistry.registerKeyBinding(new KeyListener());
+    KeyBindingRegistry.registerKeyBinding(new KeyListener());
 	}
 @Override
 public void registerPermissions() {}

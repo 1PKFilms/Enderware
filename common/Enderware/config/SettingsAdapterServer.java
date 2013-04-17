@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -263,6 +265,41 @@ public class SettingsAdapterServer extends SettingsAdapter{
 	  	  PacketDispatcher.sendPacketToAllPlayers(packet);
 	}
 	}
+	public void updateMod(String file,String category,String entry){
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream((file.length()+category.length()+entry.length()
+                )*2);
+        DataOutputStream outputStream = new DataOutputStream(bos);
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+    
+
+       
+        
+      
+        try {
+            outputStream.writeUTF(file);
+            outputStream.writeUTF(category);
+            outputStream.writeUTF(entry);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+       
+        
+        try{
+        outputStream.writeUTF(ModSetting.AllSettings.get(file).categorys.get(category).get(entry));
+        }catch(Throwable t){
+            t.printStackTrace();
+            return;
+        }
+        packet.channel = "ModSettings";
+        packet.data = bos.toByteArray();
+        packet.length = bos.size();
+       PacketDispatcher.sendPacketToAllPlayers(packet);
+       
+	}
 public void updateAll(){
 	Iterator<HashMap<String, Object>> i = allsettings.iterator();
 	while(i.hasNext()){
@@ -275,5 +312,203 @@ public void updateAll(){
 		}
 	}
 }
-
+public void updateAllMods(){
+    Iterator<String> files = ModSetting.AllSettings.keySet().iterator();
+    while(files.hasNext()){
+        String filetemp = files.next();
+        Iterator<String> categorys = ModSetting.AllSettings.get(filetemp).categorys.keySet().iterator();
+            while(categorys.hasNext()){
+                String categorytemp = categorys.next();
+                Iterator<String> entrys = ModSetting.AllSettings.get(filetemp).categorys.get(categorytemp).keySet().iterator();
+                    while(entrys.hasNext()){
+                        updateMod(filetemp, categorytemp, entrys.next());
+                    }
+            }
+    }
 }
+public void update(String  toset,EntityPlayer player){
+    
+    HashMap<String , Object> map = null;
+    if(Worldconfigs.containsKey(toset))map = Worldconfigs;
+    if(Chatconfigs.containsKey(toset))map =Chatconfigs;
+    if( Serverconfigs.containsKey(toset))map = Serverconfigs;
+    if( Playerconfigs.containsKey(toset))map = Playerconfigs;
+    if(map != null){
+        int size = 0;
+
+        if(map.get(toset).getClass() ==  Boolean.TYPE)size=1;
+        if(map.get(toset).getClass() == Integer.TYPE)size=Integer.SIZE;
+        
+        if(map.get(toset) instanceof String){
+        size=((String)map.get(toset)).length();
+           ByteArrayOutputStream bos = new ByteArrayOutputStream(size);
+             DataOutputStream outputStream = new DataOutputStream(bos);
+             try {
+                     outputStream.writeUTF(((String)map.get(toset)));
+                    
+             } catch (Exception ex) {
+                     ex.printStackTrace();
+             }
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = toset;
+            packet.data = bos.toByteArray();
+            packet.length = bos.size();
+            
+            Side side = FMLCommonHandler.instance().getEffectiveSide();
+            if (side == Side.SERVER) 
+              
+                PacketDispatcher.sendPacketToPlayer(packet,(Player)player);
+        }
+    
+       ByteArrayOutputStream bos = new ByteArrayOutputStream(size);
+     DataOutputStream outputStream = new DataOutputStream(bos);
+     try {
+         if(size == 0)
+          return;
+         if(size == 1)outputStream.writeBoolean(((Boolean)map.get(toset)));
+         if(size==Integer.SIZE)outputStream.writeInt(((Integer)map.get(toset)));
+     } catch (Exception ex) {
+             ex.printStackTrace();
+     }
+    Packet250CustomPayload packet = new Packet250CustomPayload();
+    packet.channel = toset;
+    packet.data = bos.toByteArray();
+    packet.length = bos.size();
+    
+    Side side = FMLCommonHandler.instance().getEffectiveSide();
+    if (side == Side.SERVER) 
+      
+        PacketDispatcher.sendPacketToPlayer(packet,(Player)player);
+}
+}
+public void updateVanilla(String toset,EntityPlayer player){
+    ServerSettingsInterface.update(toset);
+    HashMap<String , Object> map = null;
+    if(Worldconfigs.containsKey(toset))map = Worldconfigs;
+    if(Chatconfigs.containsKey(toset))map =Chatconfigs;
+    if( Serverconfigs.containsKey(toset))map = Serverconfigs;
+    if( Playerconfigs.containsKey(toset))map = Playerconfigs;
+    if(map != null){
+        int size = 0;
+    
+        
+    if(map.get(toset) == Boolean.FALSE ||map.get(toset) == Boolean.TRUE )size=1;
+    else {
+        boolean isint = false;
+        try{
+            Integer.parseInt(map.get(toset).toString());
+            isint = true;
+        }catch(NumberFormatException exeption){
+            isint = false;
+        }
+        if(isint)size = Integer.SIZE;
+    }
+    
+    if(size == 0&&map.get(toset) instanceof String){
+        size=((String)map.get(toset)).length();
+           ByteArrayOutputStream bos = new ByteArrayOutputStream(size);
+             DataOutputStream outputStream = new DataOutputStream(bos);
+             try {
+                     outputStream.writeUTF(((String)map.get(toset)));
+                    
+             } catch (Exception ex) {
+                     ex.printStackTrace();
+             }
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = toset;
+            packet.data = bos.toByteArray();
+            packet.length = bos.size();
+            
+            Side side = FMLCommonHandler.instance().getEffectiveSide();
+            if (side == Side.SERVER) 
+              
+                PacketDispatcher.sendPacketToPlayer(packet,(Player)player);
+            return;
+        }
+    
+       ByteArrayOutputStream bos = new ByteArrayOutputStream(size);
+     DataOutputStream outputStream = new DataOutputStream(bos);
+     try {
+         if(size == 0)
+          return;
+         if(size == 1)outputStream.writeBoolean(map.get(toset) == Boolean.TRUE?true:false);
+        
+         if(size==Integer.SIZE)outputStream.writeInt(((Integer)map.get(toset)));
+     } catch (Exception ex) {
+             ex.printStackTrace();
+     }
+    Packet250CustomPayload packet = new Packet250CustomPayload();
+    packet.channel = toset;
+    packet.data = bos.toByteArray();
+    packet.length = bos.size();
+    
+    Side side = FMLCommonHandler.instance().getEffectiveSide();
+    if (side == Side.SERVER) 
+      
+        PacketDispatcher.sendPacketToPlayer(packet,(Player)player);
+}
+}
+
+public void updateMod(String file,String category,String entry,EntityPlayer player){
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream((file.length()+category.length()+entry.length()
+            )*2);
+    DataOutputStream outputStream = new DataOutputStream(bos);
+    
+    Packet250CustomPayload packet = new Packet250CustomPayload();
+
+
+   
+    
+  
+    try {
+        outputStream.writeUTF(file);
+        outputStream.writeUTF(category);
+        outputStream.writeUTF(entry);
+    } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+    
+   
+    
+    try{
+    outputStream.writeUTF(ModSetting.AllSettings.get(file).categorys.get(category).get(entry));
+    }catch(Throwable t){
+        t.printStackTrace();
+        return;
+    }
+    packet.channel = "ModSettings";
+    packet.data = bos.toByteArray();
+    packet.length = bos.size();
+   PacketDispatcher.sendPacketToPlayer(packet,(Player) player);
+   
+}
+public void updateAll(EntityPlayer player){
+Iterator<HashMap<String, Object>> i = allsettings.iterator();
+while(i.hasNext()){
+    @SuppressWarnings("rawtypes")
+    Iterator y = ((HashMap<String, Object>)i.next()).keySet().iterator();
+    while(y.hasNext()){
+        String temp =((String)y.next());
+        if(Vanillasettings.containsKey(temp))updateVanilla(temp,player);
+        else update(temp,player);
+    }
+}
+}
+public void updateAllMods(EntityPlayer player){
+    Iterator<String> files = ModSetting.AllSettings.keySet().iterator();
+    while(files.hasNext()){
+        String filetemp = files.next();
+        Iterator<String> categorys = ModSetting.AllSettings.get(filetemp).categorys.keySet().iterator();
+            while(categorys.hasNext()){
+                String categorytemp = categorys.next();
+                Iterator<String> entrys = ModSetting.AllSettings.get(filetemp).categorys.get(categorytemp).keySet().iterator();
+                    while(entrys.hasNext()){
+                        updateMod(filetemp, categorytemp, entrys.next(),player);
+                    }
+            }
+    }
+}
+}
+
