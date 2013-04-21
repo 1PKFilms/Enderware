@@ -36,14 +36,18 @@ public void onPlaced(EntityPlayer player,int code){
     @Override
     public void writeToNBT(NBTTagCompound par1nbtTagCompound) {
         if(worldObj.isRemote)return;
+        if(placedby != null && !(placedby.equalsIgnoreCase("")))
         par1nbtTagCompound.setString("placedBy", placedby);
+        if(code != -1 && code != 0)
         par1nbtTagCompound.setInteger("code", (int)code);
         super.writeToNBT(par1nbtTagCompound);
     }
     @Override
     public void readFromNBT(NBTTagCompound par1nbtTagCompound) {
         if(worldObj.isRemote)return;
+        if(par1nbtTagCompound.hasKey("placedBy"))
         this.placedby = par1nbtTagCompound.getString("placedBy");
+        if(par1nbtTagCompound.hasKey("code"))
         this.code = par1nbtTagCompound.getInteger("code");
         super.readFromNBT(par1nbtTagCompound);
     }

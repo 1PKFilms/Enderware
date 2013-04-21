@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import Enderware.client.config.SettingsAdabterClient;
@@ -16,6 +17,7 @@ import Enderware.config.SettingsAdapter;
 import Enderware.config.SettingsAdapterServer;
 import Enderware.modsupport.computercraft.blocks.CommanBlockModem;
 import Enderware.network.Packehandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -101,7 +103,7 @@ public class Enderware {
         
         @PostInit
         public void postInit(FMLPostInitializationEvent event) {
-            
+  
           
         }
         @ServerStarting

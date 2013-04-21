@@ -20,6 +20,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 
 public class Packehandler implements IPacketHandler{
@@ -87,7 +88,8 @@ private static boolean toshoutdown = false;
 		if(((SettingsAdabterClient)SettingsAdabterClient.instance()).handlePacket(packet)){return;}
 		
 	}
-	protected boolean isAdmin(String username){
+	@SideOnly(Side.SERVER)
+	public static boolean isAdmin(String username){
 	     @SuppressWarnings("unchecked")
         Iterator<String> i = MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).getOps().iterator();
 	     while (i.hasNext()) {

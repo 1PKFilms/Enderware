@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
+import com.pahimar.ee3.event.ActionRequestEvent;
+
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
@@ -18,9 +20,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import Enderware.api.IEnderCommand;
+import Enderware.api.events.setBlockByPlayerEvent;
+import Enderware.api.events.setBlockEvent;
 import Enderware.config.Config;
 import Enderware.permissions.PermissionManager;
+import Enderware.protection.ProtectionManger;
 
 public class Eventhandler {
 	@ForgeSubscribe
@@ -194,6 +200,76 @@ public List<EntityPlayer> sendCHatPackages(double x, double y, double z, double 
         }
         return return_;
     }
+@ForgeSubscribe
+public void onHarvest(net.minecraftforge.event.entity.player.PlayerInteractEvent event){
+    int x = event.x;
+    int y = event.y;
+    int z = event.z;
+    if(x < 0)x++;
+    if(z < 0)z++;
+    if(event.action.compareTo(Action.RIGHT_CLICK_BLOCK) == 0){
 
+      switch (event.face) {
+        case 0:
+            y--;
+            break;
+        case 1:
+            y++;
+            break;
+        case 2:
+            z--;
+            break;
+        case 3:
+            z++;
+            break;
+        case 4:
+            x--;
+            break;
+        case 5:
+            x++;
+            break;
+        default:
+            break;
+    }
+    }
 
+ /*if((event.action.compareTo(Action.LEFT_CLICK_BLOCK) == 0)&&!ProtectionManger.instance.canPlaceOrDig(event.entityPlayer, x, event.y, event.z, event.entityPlayer.dimension)){
+     event.setCanceled(true);
+   
+     
+ }*/
+ if(event.action.compareTo(Action.RIGHT_CLICK_BLOCK) == 0&&!ProtectionManger.instance.canUse(event.entityPlayer, x, y, z, event.entityPlayer.dimension)){
+     event.setCanceled(true);
+     event.entityPlayer.sendChatToPlayer("\u00a74You are not allowed to Interact with blocks here!");
+ }
+}
+@ForgeSubscribe
+public void onBlockSet(setBlockEvent event){
+    
+   
+    event.setCanceled( !ProtectionManger.instance.canAnythingBuild(event.x, event.y, event.z, event.dimension));
+
+  
+    
+
+}
+@ForgeSubscribe
+public void onBlockSetByPlayer(setBlockByPlayerEvent event){
+   if( !ProtectionManger.instance.canPlaceOrDig(event.player, event.x, event.y, event.z, event.dimension)){
+       event.player.sendChatToPlayer("\u00a74You are not allowed to Build here!");
+       event.setCanceled(true);
+   }
+
+  
+    
+
+}
+public void onEE3Action(ActionRequestEvent event){
+    if(event.entityPlayer != null){
+        if(!ProtectionManger.instance.canPlaceOrDig(event.entityPlayer, event.x, event.y, event.z, event.entityPlayer.dimension)){
+            event.setCanceled(true);
+            event.entityPlayer.sendChatToPlayer("\u00a74You are not allowed to practis magic here!");
+        }
+    }
+}
 } 
